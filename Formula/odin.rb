@@ -29,7 +29,7 @@ class Odin < Formula
     inreplace "build_odin.sh", "dev-$(date +\"%Y-%m\")", "dev-#{version}" unless build.head?
 
     system "make", "release"
-    libexec.install "odin", "core", "shared"
+    libexec.install "odin", "core", "shared", "vendor"
     (bin/"odin").write <<~EOS
       #!/bin/bash
       export PATH="#{Formula["llvm"].opt_bin}:$PATH"
@@ -52,5 +52,9 @@ class Odin < Formula
     EOS
     system "#{bin}/odin", "build", "hellope.odin", "-file"
     assert_equal "Hellope!\n", shell_output("./hellope.bin")
+  end
+
+  test do
+    system "#{bin}/odin", "check", "#{pkgshare}/examples/all"
   end
 end
